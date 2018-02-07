@@ -260,7 +260,7 @@ public class ChangePasswordFormController {
 			if (newPassword.isNotSameAsConfirmPassword()) {
 				errors.reject("error.password.match");
 			} else if (newPassword.isEmpty()) {
-				errors.reject("error.password.weak");
+				errors.reject("legacyui.password.weak");
 			} else {
 				try {
 					newPassword.checkStrength(user);

@@ -71,7 +71,7 @@ public class OptionsFormController extends SimpleFormController {
 		
 		if (!"".equals(opts.getOldPassword())) {
 			if ("".equals(opts.getNewPassword())) {
-				errors.rejectValue("newPassword", "error.password.weak");
+				errors.rejectValue("newPassword", "legacyui.password.weak");
 			} else if (!opts.getNewPassword().equals(opts.getConfirmPassword())) {
 				errors.rejectValue("newPassword", "error.password.match");
 				errors.rejectValue("confirmPassword", "error.password.match");

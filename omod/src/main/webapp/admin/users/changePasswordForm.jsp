@@ -47,10 +47,7 @@
 					</span>
 				</td>
 			</tr>
-			<tr>
-				<td><openmrs:message code="options.login.password.confirm" /></td>
-				<td><input type="password" name="confirmPassword" value="" autocomplete="off" /></td>
-			</tr>
+			
 		</table>
 		<br/>
 		<br/>
