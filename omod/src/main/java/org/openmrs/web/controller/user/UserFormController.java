@@ -18,11 +18,13 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Provider;
 import org.openmrs.Role;
 import org.openmrs.User;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PasswordException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
@@ -216,7 +218,7 @@ public class UserFormController {
 				try {
 					OpenmrsUtil.validatePassword(user.getUsername(), password, user.getSystemId());
 				} catch (PasswordException e) {
-					errors.reject(e.getMessage());
+					errors.reject(buildGenericMessage());
 				}
 			}
 			
@@ -300,6 +302,38 @@ public class UserFormController {
 			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "User.saved");
 		}
 		return "redirect:users.list";
+	}
+
+	private String buildGenericMessage(){
+		AdministrationService administrationService = Context.getAdministrationService();
+		//GP_PASSWORD_CANNOT_MATCH_USERNAME_OR_SYSTEMID
+		StringBuilder message = new StringBuilder();
+		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_CANNOT_MATCH_USERNAME_OR_SYSTEMID))){
+			message.append("The password cannot match username or system ID.");
+		}
+
+		if(!"".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_MINIMUM_LENGTH))){
+			message.append(" - ");
+			message.append("The password must contain minimum "+administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_MINIMUM_LENGTH)+" caracters");
+		}
+
+		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_REQUIRES_DIGIT))){
+			message.append(" - ");
+			message.append("The password required at least one digit");
+		}
+
+		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_REQUIRES_NON_DIGIT))){
+			message.append(" - ");
+			message.append("The password required at least one non digit caractere");
+		}
+
+		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_REQUIRES_UPPER_AND_LOWER_CASE))){
+			message.append(" - ");
+			message.append("The password required at least one upper case caractere");
+		}
+
+		return message.toString();
+
 	}
 	
 	/**
