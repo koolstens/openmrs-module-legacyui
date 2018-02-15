@@ -11,6 +11,7 @@ package org.openmrs.web.controller.user;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
 
@@ -29,6 +30,7 @@ import org.openmrs.api.PasswordException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.messagesource.MutableMessageSource;
 import org.openmrs.propertyeditor.RoleEditor;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
@@ -308,28 +310,36 @@ public class UserFormController {
 		AdministrationService administrationService = Context.getAdministrationService();
 		//GP_PASSWORD_CANNOT_MATCH_USERNAME_OR_SYSTEMID
 		StringBuilder message = new StringBuilder();
+		MutableMessageSource mutableMessageSource = Context.getMessageSourceService().getActiveMessageSource();
+		Locale locale = Context.getLocale();
+
 		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_CANNOT_MATCH_USERNAME_OR_SYSTEMID))){
-			message.append("The password cannot match username or system ID.");
+			//message.append("The password cannot match username or system ID.");
+			message.append(mutableMessageSource.getMessage("legacyui.manageuser.password.cannotMatchUsername", null,locale));
 		}
 
 		if(!"".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_MINIMUM_LENGTH))){
 			message.append(" - ");
-			message.append("The password must contain minimum "+administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_MINIMUM_LENGTH)+" caracters");
+			//message.append("The password must contain minimum "+administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_MINIMUM_LENGTH)+" caracters");
+			message.append(mutableMessageSource.getMessage("legacyui.manageuser.password.minCharacterCount", new String [] {administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_MINIMUM_LENGTH)}, locale));
 		}
 
 		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_REQUIRES_DIGIT))){
 			message.append(" - ");
-			message.append("The password required at least one digit");
+			//message.append("The password required at least one digit");
+			message.append(mutableMessageSource.getMessage("legacyui.manageuser.password.containNumber", null, locale));
 		}
 
 		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_REQUIRES_NON_DIGIT))){
 			message.append(" - ");
-			message.append("The password required at least one non digit caractere");
+			//message.append("The password required at least one non digit caractere");
+			message.append(mutableMessageSource.getMessage("legacyui.manageuser.password.containNonNumber", null, locale));
 		}
 
 		if("true".equals(administrationService.getGlobalProperty(OpenmrsConstants.GP_PASSWORD_REQUIRES_UPPER_AND_LOWER_CASE))){
 			message.append(" - ");
-			message.append("The password required at least one upper case caractere");
+			//message.append("The password required at least one upper case caractere");
+			message.append(mutableMessageSource.getMessage("legacyui.manageuser.password.containUpperCase", null, locale));
 		}
 
 		return message.toString();
